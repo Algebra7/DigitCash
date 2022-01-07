@@ -1,6 +1,7 @@
 from .base import *
 import dj_database_url
 from corsheaders.defaults import default_headers
+import os
 
 
 ALLOWED_HOSTS = ["digittcash.herokuapp.com"]
