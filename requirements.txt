@@ -7,3 +7,5 @@ pillow==8.4.0
 pyotp==2.6.0
 dj_database_url
 django_cors_headers
+whitenoise
+gunicorn
