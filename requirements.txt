@@ -5,3 +5,4 @@ django-filter==21.1
 psycopg2==2.9.2
 pillow==8.4.0
 pyotp==2.6.0
+dj_database_url
