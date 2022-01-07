@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from .models import Profile, OTPLog, Bank, Account, Currency, Wallet, Transaction
 from .serializers import UserSerializer, ProfileSerializer, AccountSerializer, BankSerializer, CurrencySerializer, WalletSerializer, TransactionSerializer
-from .utils import handle_otp
+from .utils import handle_otp, is_valid_secret_key
 import pyotp
 import os
 
@@ -31,6 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
 
     def create(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = {
             "user":{
                 "username": request.data.get("username"),
@@ -52,6 +54,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"state":"success"}, status=status.HTTP_200_OK)
 
     def list(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         token_key = request.headers.get('Token')
         try:
             token = Token.objects.get(key=token_key)
@@ -64,6 +68,8 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk=None):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             User.objects.filter(pk=Profile.objects.get(pk=pk).user.pk).update(first_name=request.data.get("first_name"), last_name=request.data.get("last_name"))
             Profile.objects.filter(pk=pk).update(first_name=request.data.get("first_name"), middle_name=request.data.get("middle_name"), last_name=request.data.get("last_name"))
@@ -77,6 +83,8 @@ class CheckUser(APIView):
     permission_classes = ()
 
     def get(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.GET
         phone = data.get('phone')
         if not phone:
@@ -94,6 +102,8 @@ class SendOTP(APIView):
     permission_classes = ()
 
     def get(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.GET
         phone = data.get('phone')
         email = data.get('email')
@@ -143,6 +153,8 @@ class VerifyOTP(APIView):
     permission_classes = ()
     
     def get(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.GET
         phone = data.get('phone')
         email = data.get('email')
@@ -167,6 +179,8 @@ class Login(APIView):
     permission_classes = ()
 
     def post(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data
         phone = data.get("phone")
         email = data.get("email")
@@ -206,11 +220,23 @@ class BanksViewSet(viewsets.ModelViewSet):
     serializer_class = BankSerializer
     queryset = Bank.objects.all()
 
+    def list(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BankSerializer(self.queryset, many=True)
+        return Response(serializer.data)
+
 class CurrenciesViewSet(viewsets.ModelViewSet):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = CurrencySerializer
     queryset = Currency.objects.all()
+
+    def list(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = CurrencySerializer(self.queryset, many=True)
+        return Response(serializer.data)
 
 
 class AccountsViewSet(viewsets.ModelViewSet):
@@ -220,6 +246,8 @@ class AccountsViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
 
     def create(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data
         token_key = request.headers.get('Token')
         try:
@@ -238,6 +266,8 @@ class AccountsViewSet(viewsets.ModelViewSet):
                 return Response({"state":"failed", "message":"Account creation fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk=None):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data
         token_key = request.headers.get('Token')
         token = Token.objects.get(key=token_key)
@@ -252,6 +282,8 @@ class AccountsViewSet(viewsets.ModelViewSet):
             return Response({"state":"failed", "message":"Update fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     def list(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         token_key = request.headers.get('Token')
         try:
             token = Token.objects.get(key=token_key)
@@ -264,13 +296,14 @@ class AccountsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-
 class WalletView(APIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = WalletSerializer
 
     def get(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         token_key = request.headers.get('Token')
         try:
             token = Token.objects.get(key=token_key)
@@ -288,7 +321,6 @@ class TransactionView(APIView):
     serializer_class = TransactionSerializer
 
     def post(self, request):
-        # data = request.data
         """
         transaction_type: 'Deposite',
         currency_code: 'usd'
@@ -297,6 +329,8 @@ class TransactionView(APIView):
             receiver_email: 'email'
         """
 
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         token_key = request.headers.get('Token')
         try:
             token = Token.objects.get(key=token_key)
@@ -356,6 +390,8 @@ class TransactionView(APIView):
                 return Response({"state":"failed", "message":"Wallet creation fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 
     def get(self, request):
+        if not is_valid_secret_key(request):
+            return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         token_key = request.headers.get('Token')
         try:
             token = Token.objects.get(key=token_key)

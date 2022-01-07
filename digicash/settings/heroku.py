@@ -28,6 +28,8 @@ CORS_ALLOW_METHODS = [
     'PUT'
 ]
 
-CORS_ALLOW_HEADERS = list(default_headers)
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Secret-Key',
+]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

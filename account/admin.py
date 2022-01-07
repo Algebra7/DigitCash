@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, OTPLog, Bank, Account, Wallet, Currency, Transaction
+from .models import Profile, OTPLog, Bank, Account, Wallet, Currency, Transaction, SecretKey
 
 # Register your models here.
 
@@ -45,3 +45,4 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Bank)
+admin.site.register(SecretKey)
