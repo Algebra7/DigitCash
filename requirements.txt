@@ -7,3 +7,4 @@ pillow==8.4.0
 pyotp==2.6.0
 dj_database_url
 corsheaders
+django_cors_headers
