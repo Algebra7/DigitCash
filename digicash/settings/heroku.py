@@ -29,3 +29,4 @@ CORS_ALLOW_METHODS = [
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
