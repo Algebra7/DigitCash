@@ -9,7 +9,7 @@ User = get_user_model()
 @receiver(post_save, sender=Transaction)
 def update_wallet(sender, instance, created, **kwargs):
     if created:
-        transaction_type = instance.t_type
+        transaction_type = instance.transaction_type
         transaction_amount = instance.amount
         user = instance.user
         user_wallets = Wallet.objects.filter(user=user)
@@ -18,7 +18,8 @@ def update_wallet(sender, instance, created, **kwargs):
             transaction_sender = user
             transaction_receiver = instance.receiver
             sender_wallet = user_wallet
-            receiver_wallet = transaction_receiver.wallet
+            receiver_wallets = Wallet.objects.filter(user=transaction_receiver)
+            receiver_wallet = receiver_wallets.get(currency=instance.currency)
             sender_wallet.balance -= transaction_amount
             receiver_wallet.balance += transaction_amount
             sender_wallet.save()

@@ -51,7 +51,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = ProfileSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"state":"success"}, status=status.HTTP_200_OK)
+            return Response({"state":"success", "message":"User created successfully"}, status=status.HTTP_200_OK)
 
     def list(self, request):
         if not is_valid_secret_key(request):
