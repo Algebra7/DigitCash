@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.base import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db.models import Q
-from .models import Profile, OTPLog, Bank, Account, Currency, Wallet, Transaction
+from .models import Profile, OTPLog, Bank, Account, Currency, Wallet, Transaction, OTPKey
 from .serializers import UserSerializer, ProfileSerializer, AccountSerializer, BankSerializer, CurrencySerializer, WalletSerializer, TransactionSerializer
 from .utils import handle_otp, is_valid_secret_key
 import pyotp
@@ -112,7 +112,8 @@ class SendOTP(APIView):
         if phone and email:
             return Response({"state":"failed", "message": "Both phone and eamil cannot be provided at the same time"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         
-        otp_secret = os.environ['PYOTP_SECRET']
+        otp_secret = OTPKey.objects.all()[0]
+        # otp_secret = os.environ['PYOTP_SECRET']
         totp = pyotp.TOTP(otp_secret, interval=1)
         otp = totp.now()
 
