@@ -104,7 +104,7 @@ class SendOTP(APIView):
     def post(self, request):
         if not is_valid_secret_key(request):
             return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
-        data = request.GET
+        data = request.data
         phone = data.get('phone')
         email = data.get('email')
         if not phone and not email:
@@ -155,7 +155,7 @@ class VerifyOTP(APIView):
     def post(self, request):
         if not is_valid_secret_key(request):
             return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
-        data = request.GET
+        data = request.data
         phone = data.get('phone')
         email = data.get('email')
         otp = data.get('otp')
