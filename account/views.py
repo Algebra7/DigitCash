@@ -114,7 +114,7 @@ class SendOTP(APIView):
         
         otp_secret = OTPKey.objects.all()[0]
         # otp_secret = os.environ['PYOTP_SECRET']
-        totp = pyotp.TOTP(otp_secret, interval=1)
+        totp = pyotp.TOTP(otp_secret.key, interval=1)
         otp = totp.now()
 
         #check if an OTP related to the giving email exist, if yes delete it before creating a new one
