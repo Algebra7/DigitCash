@@ -101,7 +101,7 @@ class SendOTP(APIView):
     authentication_classes = ()
     permission_classes = ()
 
-    def get(self, request):
+    def post(self, request):
         if not is_valid_secret_key(request):
             return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.GET
@@ -152,7 +152,7 @@ class VerifyOTP(APIView):
     authentication_classes = ()
     permission_classes = ()
     
-    def get(self, request):
+    def post(self, request):
         if not is_valid_secret_key(request):
             return Response({'state':'failed', 'message':'Invalid secret key'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.GET
