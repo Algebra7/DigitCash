@@ -324,8 +324,8 @@ class TransactionView(APIView):
     def post(self, request):
         """
         transaction_type: 'Deposite',
-        currency_code: 'usd'
-        amount: '2000'
+        currency_id: 1,
+        amount: '2000',
         if transaction_type == 'Transfer'
             receiver_email: 'email'
         """
@@ -341,7 +341,7 @@ class TransactionView(APIView):
         user = token.user
 
         transaction_type = request.data.get('transaction_type')
-        currency_code = request.data.get('currency_code')
+        currency_id = request.data.get('currency_id')
         transaction_amount = request.data.get('amount')
         if transaction_type not in ['Deposite', 'Transfer', 'Withdrawal']:
             return Response({'state':'failed', 'message':'Invalid transaction type'}, status=status.HTTP_400_BAD_REQUEST)
@@ -357,7 +357,7 @@ class TransactionView(APIView):
             except ObjectDoesNotExist:
                 return Response({"state":"failed", "message":"Receiver cannot be found"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            currency = Currency.objects.get(code=currency_code)
+            currency = Currency.objects.get(id=currency_id)
         except ObjectDoesNotExist:
             return Response({"state":"failed", "message":"Currency cannot be found using the given currency code"}, status=status.HTTP_400_BAD_REQUEST)
 
