@@ -262,7 +262,7 @@ class AccountsViewSet(viewsets.ModelViewSet):
             try:
                 bank = Bank.objects.get(pk=data.pop('bank_id'))
                 account = Account.objects.create(user=user, bank_id=bank, **data)
-                return Response({"state":"success"}, status=status.HTTP_200_OK)
+                return Response({"state":"success", "message":"Bank account created successfully"}, status=status.HTTP_200_OK)
             except:
                 return Response({"state":"failed", "message":"Account creation fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -278,7 +278,7 @@ class AccountsViewSet(viewsets.ModelViewSet):
         try:
             bank = Bank.objects.get(pk=request.data.pop('bank_id'))
             Account.objects.filter(pk=pk).update(user=user, bank_id=bank, **data)
-            return Response({"state":"success", "message":"Basic info updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"state":"success", "message":"Bank account details updated successfully"}, status=status.HTTP_200_OK)
         except:
             return Response({"state":"failed", "message":"Update fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -386,7 +386,7 @@ class TransactionView(APIView):
                     Transaction.objects.create(user=user, receiver=receiver, currency=currency, **data)
                 else:
                     Transaction.objects.create(user=user, receiver=None, currency=currency, transaction_type=data.get('transaction_type'), amount=data.get('amount'))
-                return Response({"state":"success"}, status=status.HTTP_200_OK)
+                return Response({"state":"success", "message":"Transaction created successfully"}, status=status.HTTP_200_OK)
             except Exception as ee:
                 return Response({"state":"failed", "message":"Wallet creation fails"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 

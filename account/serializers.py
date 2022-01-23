@@ -48,14 +48,15 @@ class CurrencySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Currency
-        fields = ('code', 'name')
+        fields = ('id', 'code', 'name')
 
 
 class WalletSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer(many=False)
 
     class Meta:
         model = Wallet
-        fields = ('balance', 'currency')
+        fields = ('id', 'currency', 'balance')
 
     
 class TransactionSerializer(serializers.ModelSerializer):
