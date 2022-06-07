@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
-def handle_otp(otp, email=False, phone=False):
+def handle_otp(otp, email):
     """
         This returns the time difference between OTP time stamp and the current time in minutes
         Params str:otp, str:email or str:phone
@@ -16,11 +16,7 @@ def handle_otp(otp, email=False, phone=False):
     current_time = timezone.now()
 
     try:
-        if phone:
-            otp_record = OTPLog.objects.get(phone=phone)
-        if email:
-            otp_record = OTPLog.objects.get(email=email)
-
+        otp_record = OTPLog.objects.get(email=email)
     except ObjectDoesNotExist:
         return {"state":"failed", "message":"OTP Verification failed. Invalid OTP. Please check and try again"}
 
