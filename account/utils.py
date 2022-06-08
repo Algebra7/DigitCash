@@ -31,16 +31,4 @@ def handle_otp(otp, email):
     #delete otp record after verification to avoid reusing of the otp
     otp_record.delete()
     return {"state":"success", "message":"OTP verified successfully"}
-
-
-def is_valid_secret_key(request):
-    secret_key = request.headers.get('Secret-Key')
-    if not secret_key:
-        return False
-    try:
-        key = SecretKey.objects.get(key=secret_key)
-    except ObjectDoesNotExist:
-        return False
-
-    return True
     
