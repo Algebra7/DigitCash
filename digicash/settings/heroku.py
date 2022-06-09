@@ -9,9 +9,9 @@ ALLOWED_HOSTS = ["digittcash.herokuapp.com"]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'digicash_db',
-        'USER': 'digicash',
-        'PASSWORD': 'watawallet',
+        'NAME': os.environ['DIGIT_CASH_DB'],
+        'USER': os.environ['DIGIT_CASH_USER'],
+        'PASSWORD': os.environ['DIGIT_CASH_PASSWORD'],
         'HOST': 'localhost',
         'PORT': '',
     }
